@@ -15,6 +15,6 @@ $name = "kaspar";
         <li><a href="/">Home</a></li>
         <li><a href="/about.php">About</a></li>
     </ul>
-    <h1>Hello <?php echo $name ?></h1>
+    <h1>About <?php echo $name ?></h1>
 </body>
 </html>
