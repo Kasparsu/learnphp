@@ -1,20 +1,14 @@
 <?php
-$name = "kaspar";
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about.php">About</a></li>
-    </ul>
-    <h1>Hello <?php echo $name ?></h1>
-</body>
-</html>
+//require_once './src/Cat.php';
+
+require './vendor/autoload.php';
+
+use App\Birds\Cat as BirdsCat;
+use App\Birds\Hawk;
+use App\Cat;
+
+$cat = new Cat();
+$birdCat = new BirdsCat();
+$dog = new App\Dog();
+$hawk = new Hawk();
