@@ -42,6 +42,10 @@ switch($path) {
     case '/response':
         dump($_GET);
         dump($_POST);
+        dump($_FILES);
+        move_uploaded_file($_FILES['image']['tmp_name'], './uploaded/' . $_FILES['image']['name']);
+        // dump($_ENV);
+        // dump(getenv('path'));
         $_SESSION['name'] = $_POST['name'];
         break;
     default: 
