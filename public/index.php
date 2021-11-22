@@ -1,55 +1,55 @@
 <?php
-session_start();
-require '../vendor/autoload.php';
 
-//var_dump($_SERVER);
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Http\Request;
 
-$servername = "localhost";
-$username = "root";
-$password = "";
+define('LARAVEL_START', microtime(true));
 
-try {
-  $conn = new PDO("mysql:host=$servername;dbname=my_db", $username, $password);
-  // set the PDO error mode to exception
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  $stmt = $conn->prepare("SELECT * FROM persons");
-  $stmt->execute();
+/*
+|--------------------------------------------------------------------------
+| Check If The Application Is Under Maintenance
+|--------------------------------------------------------------------------
+|
+| If the application is in maintenance / demo mode via the "down" command
+| we will load this file so that any pre-rendered content can be shown
+| instead of starting the framework, which could cause an exception.
+|
+*/
 
-  // set the resulting array to associative
-  $stmt->setFetchMode(PDO::FETCH_ASSOC);
-  $persons = $stmt->fetchAll();
-  //dump($persons);
-} catch(PDOException $e) {
-  echo "Connection failed: " . $e->getMessage();
+if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
+    require __DIR__.'/../storage/framework/maintenance.php';
 }
 
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-switch($path) {
-    case '/':
-        setcookie('mycookie', 'hello', time() + 60*60*24*30);
-        //setcookie('mycookie', 'hello');
-        dump($_COOKIE);
-        dump($_SESSION['name']);
-        include '../views/home.php';
-        break;
-    case '/about':
-        $title = "about";
-        include '../views/about.php';
-        break;
-    case '/form':
-        include '../views/form.php';
-        break;
-    case '/response':
-        dump($_GET);
-        dump($_POST);
-        dump($_FILES);
-        move_uploaded_file($_FILES['image']['tmp_name'], './uploaded/' . $_FILES['image']['name']);
-        // dump($_ENV);
-        // dump(getenv('path'));
-        $_SESSION['name'] = $_POST['name'];
-        break;
-    default: 
-        echo "404 page not found";
-        http_response_code(404);
-        break;
-}
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| this application. We just need to utilize it! We'll simply require it
+| into the script here so we don't need to manually load our classes.
+|
+*/
+
+require __DIR__.'/../vendor/autoload.php';
+
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+|
+| Once we have the application, we can handle the incoming request using
+| the application's HTTP kernel. Then, we will send the response back
+| to this client's browser, allowing them to enjoy our application.
+|
+*/
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+$kernel = $app->make(Kernel::class);
+
+$response = $kernel->handle(
+    $request = Request::capture()
+)->send();
+
+$kernel->terminate($request, $response);
